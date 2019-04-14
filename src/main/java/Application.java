@@ -5,11 +5,8 @@ import java.sql.DriverManager;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static jooq.base.Tables.TABLE_1;
 import static jooq.base.tables.Clients.CLIENTS;
-
-//import static org.jooq.sources.tables.Clients.CLIENTS;
-//import static org.jooq.sources.tables.Table_1.TABLE_1;
+import static jooq.base.tables.Viewcardinfo.VIEWCARDINFO;
 
 
 public class Application {
@@ -24,7 +21,7 @@ public class Application {
         try (Connection con = DriverManager.getConnection(url, user, password)){
             DSLContext dsl = DSL.using(con, SQLDialect.POSTGRES_9_5);
 
-            List<CardsRecords> result = dsl.select().from(TABLE_1).fetch().into(CardsRecords.class);
+            List<CardsRecords> result = dsl.select().from(VIEWCARDINFO).fetch().into(CardsRecords.class);
             result.forEach(cardReq -> {
                 log.info("ID: "+cardReq.getId()
                         +" Aliace: "+cardReq.getCardAliace()
@@ -34,10 +31,10 @@ public class Application {
 
             System.out.println();
 
-            List<Clients> res2 = dsl.select(CLIENTS.ID.as("id"),CLIENTS.FIRST_NAME,
-                    TABLE_1.CARD_ALIACE,TABLE_1.ID.as("cardId")).from(CLIENTS)
-                    .leftJoin(TABLE_1).on(CLIENTS.CARD_ID.eq(TABLE_1.ID))
-                    .where(TABLE_1.CARD_ALIACE.eq("MIR"))
+            List<Clients> res2 = dsl.select(CLIENTS.ID.as("id"),CLIENTS.FIRST_NANE,
+                    VIEWCARDINFO.CARDALIACE,VIEWCARDINFO.ID.as("cardId")).from(CLIENTS)
+                    .leftJoin(VIEWCARDINFO).on(CLIENTS.CARD_ID.eq(VIEWCARDINFO.ID))
+                    .where(VIEWCARDINFO.CARDALIACE.eq("MIR"))
                     .fetch().into(Clients.class);
 
             res2.forEach(cardReq -> {
@@ -50,10 +47,10 @@ public class Application {
 
             System.out.println();
 
-            dsl.select(CLIENTS.ID.as("id"),CLIENTS.FIRST_NAME,
-                    TABLE_1.CARD_ALIACE,TABLE_1.ID.as("cardId")).from(CLIENTS)
-                    .leftJoin(TABLE_1).on(CLIENTS.CARD_ID.eq(TABLE_1.ID))
-                    .where(TABLE_1.CARD_ALIACE.eq("MIRYL"))
+            dsl.select(CLIENTS.ID.as("id"),CLIENTS.FIRST_NANE,
+                    VIEWCARDINFO.CARDALIACE,VIEWCARDINFO.ID.as("cardId")).from(CLIENTS)
+                    .leftJoin(VIEWCARDINFO).on(CLIENTS.CARD_ID.eq(VIEWCARDINFO.ID))
+                    .where(VIEWCARDINFO.CARDALIACE.eq("MIRYL"))
                     .queryTimeout(60000).fetch();
 
             /*dsl.insertInto(TABLE_1).columns(TABLE_1.ID,TABLE_1.CARD_ALIACE,TABLE_1.DATE)
